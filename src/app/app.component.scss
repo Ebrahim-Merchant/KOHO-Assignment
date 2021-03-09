@@ -1,0 +1,29 @@
+:host {
+  div {
+    width: 100%;
+    display: flex;
+    margin-top: 16px;
+    justify-content: center;
+  }
+  table {
+    margin-top: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    th {
+      padding: 16px;
+    }
+
+    tr td {
+      &.accepted {
+        color: white;
+        text-transform: capitalize;
+        text-align: center;
+        background-color: rgb(11, 184, 11);
+        &.rejected {
+          background-color: rgb(237, 68, 68);
+        }
+      }
+
+    }
+  }
+}
