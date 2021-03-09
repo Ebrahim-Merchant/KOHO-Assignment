@@ -1,4 +1,6 @@
-export const inputTestData = [
+import { InputDTO } from 'src/core/models/input-dto';
+
+export const inputTestData: InputDTO[] = [
   {
     id: '15887',
     customer_id: '528',
