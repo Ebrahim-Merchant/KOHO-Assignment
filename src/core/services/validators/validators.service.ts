@@ -2,26 +2,9 @@ import { OutputDTO } from '../../models/output-dto';
 import { UtilsService } from '../util/util.service';
 import { ILoadTransaction } from '../../models/transaction-info';
 import { Injectable } from '@angular/core';
+import { DAILY_LOAD_COUNT, DAILY_LOAD_AMOUNT, WEEKLY_LOAD_LIMIT } from './validators.constants';
+import { CustomerInfoMap } from './validators.models';
 
-export interface CustomerInfoMap {
-  [customerId: string]: CustomerInfo;
-}
-
-export interface CustomerInfo {
-  dailyTransactionAmount: number;
-  weeklyTransactionAmount: number;
-  dailyCount: number;
-  lastTransaction: {
-    date: Date,
-    workWeek: number
-  },
-  visitedTransaction: { [key: string]: boolean }
-
-}
-
-export const DAILY_LOAD_AMOUNT = 5000;
-export const DAILY_LOAD_COUNT = 3;
-export const WEEKLY_LOAD_LIMIT = 20000;
 
 @Injectable({ providedIn: 'root' })
 export class ValidatorsService {
@@ -30,7 +13,7 @@ export class ValidatorsService {
   /**
    * Validates the transaction list.
    * Technically should be able to handle real time if
-   * we need didnt need to hide duplicated just set them to false
+   * we need didnt need to hide duplicated transaction Id
    *
    * @param {ILoadTransaction[]} transactionList
    * @returns {OutputDTO[]}
@@ -55,13 +38,13 @@ export class ValidatorsService {
    */
   validateTransaction(transactionInfo: ILoadTransaction): OutputDTO | false {
 
-    //Get the user information
+    // Get the user information
     let userInfo = this.customerInfoMap[transactionInfo.customerId];
 
-    //If user doesn't exist create a entry
+    // If user doesn't exist create a entry
     if (!userInfo) {
       this.createCustomerInfoEntry(transactionInfo.customerId);
-      userInfo = this.customerInfoMap[transactionInfo.customerId]
+      userInfo = this.customerInfoMap[transactionInfo.customerId];
     }
 
     // If the transaction has already been proccessed ignore this one if not add to visitedTransaction
@@ -90,8 +73,8 @@ export class ValidatorsService {
       accepted:
         this.checkDailyCount(transactionInfo) &&
         this.checkDailyAmount(transactionInfo) &&
-        this.checkWeekly(transactionInfo)
-    }
+        this.checkWeeklyAmount(transactionInfo)
+    };
   }
 
 
@@ -112,8 +95,8 @@ export class ValidatorsService {
 
     const updateDailyCount = userInfo.dailyCount + 1;
 
-    if (updateDailyCount) {
-      userInfo.dailyCount = userInfo.dailyCount + 1
+    if (updateDailyCount <= DAILY_LOAD_COUNT) {
+      userInfo.dailyCount = userInfo.dailyCount + 1;
       return true;
     }
     return false;
@@ -136,7 +119,7 @@ export class ValidatorsService {
 
     const updateDailyTotal = userInfo.dailyTransactionAmount + loadInfoTransaction.amount;
     if (updateDailyTotal <= DAILY_LOAD_AMOUNT) {
-      userInfo.dailyTransactionAmount = updateDailyTotal
+      userInfo.dailyTransactionAmount = updateDailyTotal;
       return true;
     }
     return false;
@@ -149,7 +132,7 @@ export class ValidatorsService {
    * @returns {boolean}
    * @memberof ValidatorsService
    */
-  checkWeekly(loadInfoTransaction: ILoadTransaction): boolean {
+  checkWeeklyAmount(loadInfoTransaction: ILoadTransaction): boolean {
     const customerInfo = this.customerInfoMap[loadInfoTransaction.customerId];
     if (!customerInfo) {
       return true;
@@ -181,7 +164,7 @@ export class ValidatorsService {
           workWeek: 0
         },
         visitedTransaction: {}
-      }
+      };
     }
 
   }

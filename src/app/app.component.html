@@ -3,12 +3,12 @@
 </mat-toolbar>
 
 
-<ng-container *ngIf="inputValue$  | async as inputValue">
+<ng-container *ngIf="validatedTransaction$  | async as validatedTransactionItem">
   <div>
-    <button mat-raised-button (click)="downloadFile(inputValue)">Download Data</button>
+    <button mat-raised-button (click)="downloadFile(validatedTransactionItem)">Download Data</button>
   </div>
 
-  <table mat-table [dataSource]="inputValue" class="mat-elevation-z8" matSort aria-describedby="Table with parsed data">
+  <table mat-table [dataSource]="validatedTransactionItem" class="mat-elevation-z8" matSort aria-describedby="Table with parsed data">
     <ng-container matColumnDef="customer_id">
       <th id="customer-id" mat-header-cell *matHeaderCellDef mat-sort-header> Customer ID </th>
       <td mat-cell *matCellDef="let element"> {{element.customer_id}} </td>
