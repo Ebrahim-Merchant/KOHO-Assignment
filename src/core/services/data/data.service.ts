@@ -16,6 +16,7 @@ export class DataService {
 
   mapInputToLoadInfo(inputDataList: InputDTO[]): ILoadTransaction[] {
     return inputDataList.map((inputItem) => {
+      //Removes everything but numbers from currency
       const currency = inputItem.load_amount.replace(/[^0-9\.-]+/g, "")
       return {
           customerId: inputItem.customer_id,
@@ -24,6 +25,5 @@ export class DataService {
           lastAdded: new Date(inputItem.time)
       }
     })
-    // .filter((item) => item.customerId === '137')
   }
 }

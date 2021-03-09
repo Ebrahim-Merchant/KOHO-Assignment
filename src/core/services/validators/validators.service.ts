@@ -112,7 +112,7 @@ export class ValidatorsService {
 
     const updateDailyCount = userInfo.dailyCount + 1;
 
-    if (updateDailyCount) {
+    if (updateDailyCount <= DAILY_LOAD_COUNT) {
       userInfo.dailyCount = userInfo.dailyCount + 1
       return true;
     }
